@@ -1,9 +1,9 @@
 package com.emerson.pricecontrol.controller;
 
 import com.emerson.pricecontrol.entity.Supermarket;
-import org.modelmapper.ModelMapper;
-
 import com.emerson.pricecontrol.repository.SupermarketRepository;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +34,6 @@ public class SupermarketController {
     @PostMapping()
     public ResponseEntity post(@RequestBody Supermarket supermarket) {
         try {
-            System.out.println(supermarket.toString());
-
             return new ResponseEntity<>(supermarketRepository.save(mapper.map(supermarket, Supermarket.class)), HttpStatus.CREATED);
         } catch (Exception ex) {
              return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
