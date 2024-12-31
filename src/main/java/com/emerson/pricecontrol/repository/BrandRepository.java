@@ -1,0 +1,7 @@
+package com.emerson.pricecontrol.repository;
+
+import com.emerson.pricecontrol.entity.Brand;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BrandRepository  extends JpaRepository<Brand, Long> {
+}
