@@ -1,11 +1,14 @@
 package com.emerson.pricecontrol.controller;
 
+import com.emerson.pricecontrol.dto.BrandDTO;
 import com.emerson.pricecontrol.dto.ResponseDTO;
 import com.emerson.pricecontrol.dto.UnitMeasureDTO;
+import com.emerson.pricecontrol.entity.Brand;
 import com.emerson.pricecontrol.entity.UnitMeasure;
 import com.emerson.pricecontrol.repository.UnitMeasureRepository;
 
 import com.emerson.pricecontrol.service.UnitMeasureService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.View;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/unit-measure")
@@ -47,6 +52,55 @@ public class UnitMeasureController {
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping()
+    public ResponseEntity put(@Valid @RequestBody UnitMeasureDTO unitMeasureDTO) {
+        try {
+            // Verifica se o ID está presente no corpo da requisicao
+            if (unitMeasureDTO.getId() == null) {
+                return new ResponseEntity<>(new ResponseDTO("ID da unidade não fornecido"), HttpStatus.BAD_REQUEST);
+            }
+
+            // Verifica se existe
+            Optional<UnitMeasure> optionalUnitMeasure = unitMeasureRepository.findById(unitMeasureDTO.getId());
+            if (optionalUnitMeasure.isEmpty()) {
+                return new ResponseEntity<>(new ResponseDTO("Unidade não encontrada"), HttpStatus.NOT_FOUND);
+            }
+
+            // Verifica se o nome já existe em outra unidade de medida
+            if (unitMeasureRepository.existsByName(unitMeasureDTO.getName())
+                && !optionalUnitMeasure.get().getName().equals(unitMeasureDTO.getName())
+            ) {
+                return new ResponseEntity<>(new ResponseDTO("Unidade de medida com este nome já existe"), HttpStatus.BAD_REQUEST);
+            }
+
+            // Mapeia as alterações do DTO para a entidade existente
+            UnitMeasure existingUnitMeasure = optionalUnitMeasure.get();
+            mapper.map(unitMeasureDTO, existingUnitMeasure);
+
+            // Salva as alterações no repositório
+            UnitMeasure updatedUnitMeasure = unitMeasureRepository.save(existingUnitMeasure);
+            return new ResponseEntity<>(new ResponseDTO("Unidade atualizada com sucesso!"), HttpStatus.OK);
+
+        } catch (Exception error) {
+            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable long id){
+        try {
+            Optional<UnitMeasure> optionalUnitMeasure = unitMeasureRepository.findById(id);
+            if (optionalUnitMeasure.isEmpty()) {
+                return new ResponseEntity<>(new ResponseDTO("Unidade não encontrada"), HttpStatus.NOT_FOUND);
+            }
+
+            unitMeasureRepository.deleteById(id);
+            return new ResponseEntity<>(new ResponseDTO("Unidade removida com sucesso!"), HttpStatus.OK);
+        } catch (Exception ex){
+            return new ResponseEntity<>(new ResponseDTO(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

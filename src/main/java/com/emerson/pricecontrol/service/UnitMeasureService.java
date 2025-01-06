@@ -14,15 +14,4 @@ public class UnitMeasureService {
     public boolean existsByName(String name) {
         return unitMeasureRepository.existsByName(name);
     }
-
-    public UnitMeasure save(UnitMeasureDTO unitMeasureDTO) {
-        if (existsByName(unitMeasureDTO.getName())) {
-            throw new RuntimeException("Unidade já existente");
-        }
-        UnitMeasure unitMeasure = new UnitMeasure();
-        unitMeasure.setName(unitMeasureDTO.getName());
-        unitMeasure.setDescription(unitMeasureDTO.getDescription());
-        return unitMeasureRepository.save(unitMeasure);
-    }
-
 }
