@@ -3,7 +3,7 @@ package com.emerson.pricecontrol.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-@Table(name = "brand")
+@Table(name = "brand", uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
 @Entity
 public class Brand {
 
@@ -11,7 +11,7 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, unique = true)
     @NotBlank(message = "O campo nome é obrigatório")
     private String name;
 

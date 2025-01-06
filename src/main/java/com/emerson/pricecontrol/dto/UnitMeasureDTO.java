@@ -2,24 +2,24 @@ package com.emerson.pricecontrol.dto;
 
 public class UnitMeasureDTO {
 
-    private int id;
-    private String unit;
+    private Long id;
+    private String name;
     private String description;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getName() {
+        return name;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setName(String unit) {
+        this.name = unit;
     }
 
     public String getDescription() {
@@ -29,4 +29,5 @@ public class UnitMeasureDTO {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

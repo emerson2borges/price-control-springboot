@@ -3,14 +3,14 @@ package com.emerson.pricecontrol.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "product")
+@Table(name = "product", uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, unique = true)
     private String name;
 
     @Column(length = 255, nullable = true)

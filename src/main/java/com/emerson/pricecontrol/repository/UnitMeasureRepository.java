@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UnitMeasureRepository extends JpaRepository<UnitMeasure, Long> {
+    boolean existsByName(String name);
 }
