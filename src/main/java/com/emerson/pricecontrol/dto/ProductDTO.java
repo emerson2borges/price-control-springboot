@@ -9,8 +9,8 @@ public class ProductDTO {
     private String name;
     private String description;
     private Integer volume;
-    private Long unitMeasure;
-    private Long brand;
+    private UnitMeasure unitMeasure;
+    private Brand brand;
 
     public ProductDTO() { }
 
@@ -46,19 +46,19 @@ public class ProductDTO {
         this.volume = volume;
     }
 
-    public Long getUnitMeasure() {
+    public UnitMeasure getUnitMeasure() {
         return unitMeasure;
     }
 
-    public void setUnitMeasure(Long unitMeasure) {
+    public void setUnitMeasure(UnitMeasure unitMeasure) {
         this.unitMeasure = unitMeasure;
     }
 
-    public Long getBrand() {
+    public Brand getBrand() {
         return brand;
     }
 
-    public void setBrand(Long brand) {
+    public void setBrand(Brand brand) {
         this.brand = brand;
     }
 }

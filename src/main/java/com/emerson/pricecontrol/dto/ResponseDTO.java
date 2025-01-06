@@ -11,7 +11,15 @@ public class ResponseDTO {
     }
 
     public ResponseDTO(String message) {
-        this.messages = new ArrayList<String>();
+        this.messages = new ArrayList<>();
+        this.messages.add(message);
     }
 
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
+    }
 }
