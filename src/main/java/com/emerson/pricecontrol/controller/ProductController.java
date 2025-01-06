@@ -3,6 +3,7 @@ package com.emerson.pricecontrol.controller;
 import com.emerson.pricecontrol.dto.ProductDTO;
 import com.emerson.pricecontrol.dto.ResponseDTO;
 import com.emerson.pricecontrol.entity.Product;
+import com.emerson.pricecontrol.entity.Supermarket;
 import com.emerson.pricecontrol.repository.ProductRepository;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -53,18 +54,25 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity put(@PathVariable Long id, @Valid @RequestBody ProductDTO productDTO) {
+    @PutMapping()
+    public ResponseEntity put(@Valid @RequestBody ProductDTO productDTO) {
         try {
-            Optional<Product> optionalProduct = productRepository.findById(id);
-            if (optionalProduct.isPresent()) {
-                Product existingProduct = optionalProduct.get(); // Atualiza as informações do produto existente
-                mapper.map(productDTO, existingProduct);
-                productRepository.save(existingProduct);
-                return new ResponseEntity<>(existingProduct, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new ResponseDTO("Product not found"), HttpStatus.NOT_FOUND);
+
+            // Verifica se o ID está presente no corpo da requisicao
+            if (productDTO.getId() == null) {
+                return new ResponseEntity<>(new ResponseDTO("ID do produto não fornecido"), HttpStatus.BAD_REQUEST);
             }
+
+            // Verifica se o produto existe
+            Optional<Product> optionalProduct = productRepository.findById(productDTO.getId());
+            if (optionalProduct.isEmpty()) {
+                return new ResponseEntity<>(new ResponseDTO("Produto não encontrado"), HttpStatus.NOT_FOUND);
+            }
+
+            Product existingProduct = optionalProduct.get();
+            mapper.map(productDTO, existingProduct);
+            productRepository.save(existingProduct);
+            return new ResponseEntity<>(existingProduct, HttpStatus.OK);
         } catch (Exception error) {
             return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
