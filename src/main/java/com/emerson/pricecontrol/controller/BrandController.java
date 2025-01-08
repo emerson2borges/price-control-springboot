@@ -81,7 +81,7 @@ public class BrandController {
 
             // Salva as alterações no repositório
             Brand updatedBrand = brandRepository.save(existingBrand);
-            return new ResponseEntity<>(new ResponseDTO("Marca atualizada com sucesso!"), HttpStatus.OK);
+            return new ResponseEntity<>(updatedBrand, HttpStatus.OK);
 
         } catch (Exception error) {
             return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

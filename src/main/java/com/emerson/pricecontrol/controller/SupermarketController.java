@@ -98,7 +98,7 @@ public class SupermarketController {
 
             // Salva as alterações no repositório
             Supermarket updatedSupermarket = supermarketRepository.save(existingSupermarket);
-            return new ResponseEntity<>(new ResponseDTO("Supermercado atualizado com sucesso!"), HttpStatus.OK);
+            return new ResponseEntity<>(updatedSupermarket, HttpStatus.OK);
         } catch (Exception error){
             return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -80,7 +80,7 @@ public class UnitMeasureController {
 
             // Salva as alterações no repositório
             UnitMeasure updatedUnitMeasure = unitMeasureRepository.save(existingUnitMeasure);
-            return new ResponseEntity<>(new ResponseDTO("Unidade atualizada com sucesso!"), HttpStatus.OK);
+            return new ResponseEntity<>(updatedUnitMeasure, HttpStatus.OK);
 
         } catch (Exception error) {
             return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
