@@ -1,9 +1,7 @@
 package com.emerson.pricecontrol.controller;
 
-import com.emerson.pricecontrol.dto.BrandDTO;
 import com.emerson.pricecontrol.dto.ResponseDTO;
 import com.emerson.pricecontrol.dto.UnitMeasureDTO;
-import com.emerson.pricecontrol.entity.Brand;
 import com.emerson.pricecontrol.entity.UnitMeasure;
 import com.emerson.pricecontrol.repository.UnitMeasureRepository;
 

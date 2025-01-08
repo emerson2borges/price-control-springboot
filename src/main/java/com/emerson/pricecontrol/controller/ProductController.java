@@ -3,7 +3,6 @@ package com.emerson.pricecontrol.controller;
 import com.emerson.pricecontrol.dto.ProductDTO;
 import com.emerson.pricecontrol.dto.ResponseDTO;
 import com.emerson.pricecontrol.entity.Product;
-import com.emerson.pricecontrol.entity.Supermarket;
 import com.emerson.pricecontrol.repository.ProductRepository;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;

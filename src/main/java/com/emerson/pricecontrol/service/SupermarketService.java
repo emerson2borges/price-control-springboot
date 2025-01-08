@@ -1,7 +1,6 @@
 package com.emerson.pricecontrol.service;
 
 import com.emerson.pricecontrol.repository.SupermarketRepository;
-import com.emerson.pricecontrol.repository.UnitMeasureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
