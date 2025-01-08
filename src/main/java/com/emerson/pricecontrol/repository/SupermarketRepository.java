@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SupermarketRepository extends JpaRepository<Supermarket, Long> {
+    boolean existsByName(String name);
 }

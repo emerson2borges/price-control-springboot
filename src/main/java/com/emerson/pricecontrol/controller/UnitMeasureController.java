@@ -44,7 +44,7 @@ public class UnitMeasureController {
     @PostMapping()
     public ResponseEntity post(@RequestBody UnitMeasureDTO unitMeasureDTO) {
         try {
-            // Verifica se o nome do supermercado já existe
+            // Verifica se o nome da unidade de medida já existe
             if (unitMeasureService.existsByName(unitMeasureDTO.getName())) {
                 return new ResponseEntity<>(new ResponseDTO("Unidade com este nome já existe"), HttpStatus.BAD_REQUEST);
             }
