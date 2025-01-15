@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.View;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -22,65 +24,40 @@ import java.util.Optional;
 @RestController
 public class SupermarketController {
 
-    private final View error;
-    private SupermarketRepository supermarketRepository;
     private ModelMapper mapper;
 
-    @Autowired
     private SupermarketService supermarketService;
 
-    public SupermarketController(@Autowired SupermarketRepository supermarketRepository, View error) {
-        this.supermarketRepository = supermarketRepository;
+    @Autowired
+    public SupermarketController(@Autowired SupermarketService supermarketService) {
+        this.supermarketService = supermarketService;
         this.mapper = new ModelMapper();
-        this.error = error;
     }
 
     @GetMapping()
-    public ResponseEntity getAll() {
-        return new ResponseEntity<>(supermarketRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<Supermarket>> getAll() {
+        List<Supermarket> supermarkets = supermarketService.findAll();
+        return new ResponseEntity<>(supermarkets, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getSupermarketById(@PathVariable Long id) {
-        Optional<Supermarket> supermarket = supermarketRepository.findById(id);
-        if (!supermarket.isEmpty()) {
-            return new ResponseEntity<>(supermarket.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new ResponseDTO("Supermercado não encontrado"), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<SupermarketDTO> getById(@PathVariable Long id) {
+        return new ResponseEntity(supermarketService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity post(@RequestBody Supermarket supermarket) {
+    public ResponseEntity post(@RequestBody SupermarketDTO supermarketDTO) {
         try {
-            // Verifica se o nome do supermercado já existe
-            if (supermarketService.existsByName(supermarket.getName())) {
-                return new ResponseEntity<>("Supermercado com este nome já existe.", HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(supermarketRepository.save(mapper.map(supermarket, Supermarket.class)), HttpStatus.CREATED);
+            Supermarket supermarket = mapper.map(supermarketDTO, Supermarket.class);
+            Supermarket createSupermarket = supermarketService.createSupermarket(supermarket);
+            return new ResponseEntity<>(createSupermarket, HttpStatus.CREATED);
         } catch (Exception ex) {
              return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity put(@PathVariable Long id, @Valid @RequestBody SupermarketDTO supermarketDTO) {
-////        System.out.println(supermarketDTO.getId());
-//        try {
-//            Optional<Supermarket> optionalSupermarket = supermarketRepository.findById(id);
-//            if (optionalSupermarket.isPresent()) {
-//                Supermarket existingSupermarket = optionalSupermarket.get();
-//                mapper.map(supermarketDTO, existingSupermarket);
-//                supermarketRepository.save(existingSupermarket);
-//                return new ResponseEntity<>(existingSupermarket, HttpStatus.OK);
-//            } else {
-//                return new ResponseEntity<>(new ResponseDTO("Supermercado não encontrado"), HttpStatus.NOT_FOUND);
-//            }
-//        } catch (Exception error) {
-//            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+
     @PutMapping()
     public ResponseEntity put(@Valid @RequestBody SupermarketDTO supermarketDTO){
         try {
@@ -89,26 +66,11 @@ public class SupermarketController {
                 return new ResponseEntity<>(new ResponseDTO("ID do supermercado não fornecido"), HttpStatus.BAD_REQUEST);
             }
 
-            // Verifica se o supermercado existe
-            Optional<Supermarket> optionalSupermarket = supermarketRepository.findById(supermarketDTO.getId());
-            if (optionalSupermarket.isEmpty()) {
-                return new ResponseEntity<>(new ResponseDTO("Supermercado não encontrado"), HttpStatus.NOT_FOUND);
-            }
-
-            // Verifica se o nome já exise em outro supermercado
-            if (supermarketService.existsByName(supermarketDTO.getName())
-                && !optionalSupermarket.get().getName().equals(supermarketDTO.getName())
-            ) {
-                return new ResponseEntity<>(new ResponseDTO("Supermercado já existe"), HttpStatus.BAD_REQUEST);
-            }
-
             // Mapeia as alterações do DTO para a entidade existente
-            Supermarket existingSupermarket = optionalSupermarket.get();
-            mapper.map(supermarketDTO, existingSupermarket);
-
-            // Salva as alterações no repositório
-            Supermarket updatedSupermarket = supermarketRepository.save(existingSupermarket);
+            Supermarket supermarketDetail = mapper.map(supermarketDTO, Supermarket.class);
+            Supermarket updatedSupermarket = supermarketService.updateSupermarket(supermarketDTO.getId(), supermarketDetail);
             return new ResponseEntity<>(updatedSupermarket, HttpStatus.OK);
+
         } catch (Exception ex){
             return new ResponseEntity<>(new ResponseDTO(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -118,12 +80,7 @@ public class SupermarketController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable long id){
         try {
-            Optional<Supermarket> optionalSupermarket = supermarketRepository.findById(id);
-            if (optionalSupermarket.isEmpty()) {
-                return new ResponseEntity<>(new ResponseDTO("Supermercado não encontrado"), HttpStatus.NOT_FOUND);
-            }
-
-            supermarketRepository.deleteById(id);
+            supermarketService.deleteSupermarket(id);
             return new ResponseEntity<>(new ResponseDTO("Supermercado removido com sucesso!"), HttpStatus.OK);
         } catch (Exception error){
             return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
