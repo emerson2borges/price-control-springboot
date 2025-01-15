@@ -1,11 +1,9 @@
 package com.emerson.pricecontrol.controller;
 
+import com.emerson.pricecontrol.exception.ResourceNotFoundException;
 import com.emerson.pricecontrol.dto.BrandDTO;
 import com.emerson.pricecontrol.dto.ResponseDTO;
 import com.emerson.pricecontrol.entity.Brand;
-import com.emerson.pricecontrol.entity.Product;
-import com.emerson.pricecontrol.entity.Supermarket;
-import com.emerson.pricecontrol.repository.BrandRepository;
 import com.emerson.pricecontrol.service.BrandService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -14,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.View;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,31 +21,34 @@ import java.util.Optional;
 @RestController
 public class BrandController {
 
-    private final View error;
-    private BrandRepository brandRepository;
     private ModelMapper mapper;
+
     @Autowired
     private BrandService brandService;
 
-    public BrandController(@Autowired BrandRepository brandRepository, View error) {
-        this.brandRepository = brandRepository;
+    public BrandController(@Autowired BrandService brandService) {
+        this.brandService = brandService;
         this.mapper = new ModelMapper();
-        this.error = error;
     }
 
     @GetMapping()
-    public ResponseEntity getAll() {
-        return new ResponseEntity<>(brandRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<BrandDTO>> getAll() {
+        List<Brand> brands = brandService.findAll();
+
+        return new ResponseEntity(brands, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BrandDTO> findById(@PathVariable Long id) {
+        return new ResponseEntity(brandService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity post(@RequestBody Brand brand) {
+    public ResponseEntity post(@RequestBody BrandDTO brandDTO) {
         try {
-            // Verifica se a marca ja existe
-            if (brandService.existsByName(brand.getName())) {
-                return new ResponseEntity<>("Marca com este nome já existe.", HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(brandRepository.save(mapper.map(brand, Brand.class)), HttpStatus.CREATED);
+            Brand brand = mapper.map(brandDTO, Brand.class);
+            Brand createdBrand = brandService.createBrand(brand);
+            return new ResponseEntity<>(createdBrand, HttpStatus.CREATED);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -62,25 +63,8 @@ public class BrandController {
                 return new ResponseEntity<>(new ResponseDTO("ID da marca não fornecida"), HttpStatus.BAD_REQUEST);
             }
 
-            // Verifica se a marca existe
-            Optional<Brand> optionalBrand = brandRepository.findById(brandDTO.getId());
-            if (optionalBrand.isEmpty()) {
-                return new ResponseEntity<>(new ResponseDTO("Marca não encontrada"), HttpStatus.NOT_FOUND);
-            }
-
-            // Verifica se o nome da marca já existe
-            if (brandService.existsByName(brandDTO.getName())
-                && !optionalBrand.get().getName().equals(brandDTO.getName())
-            ) {
-                return new ResponseEntity<>(new ResponseDTO("Marca com esse nome já existe"), HttpStatus.BAD_REQUEST);
-            }
-
-            // Mapeia as alterações do DTO para a entidade existente
-            Brand existingBrand = optionalBrand.get();
-            mapper.map(brandDTO, existingBrand);
-
-            // Salva as alterações no repositório
-            Brand updatedBrand = brandRepository.save(existingBrand);
+            Brand brandDetails = mapper.map(brandDTO, Brand.class);
+            Brand updatedBrand = brandService.updateBrand(brandDTO.getId(), brandDetails);
             return new ResponseEntity<>(updatedBrand, HttpStatus.OK);
 
         } catch (Exception ex) {
@@ -91,13 +75,8 @@ public class BrandController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable long id){
         try {
-            Optional<Brand> optionalBrand = brandRepository.findById(id);
-            if (optionalBrand.isEmpty()) {
-                return new ResponseEntity<>(new ResponseDTO("Maraca não encontrada"), HttpStatus.NOT_FOUND);
-            }
-
-            brandRepository.deleteById(id);
-            return new ResponseEntity<>(new ResponseDTO("Marca removida com sucesso!"), HttpStatus.OK);
+            brandService.deleteBrand(id);
+            return new ResponseEntity<>(new ResponseDTO("Marca excluída com sucesso!"), HttpStatus.OK);
         } catch (Exception ex){
             return new ResponseEntity<>(new ResponseDTO(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
