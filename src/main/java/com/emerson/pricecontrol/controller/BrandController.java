@@ -83,8 +83,8 @@ public class BrandController {
             Brand updatedBrand = brandRepository.save(existingBrand);
             return new ResponseEntity<>(updatedBrand, HttpStatus.OK);
 
-        } catch (Exception error) {
-            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ResponseDTO(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

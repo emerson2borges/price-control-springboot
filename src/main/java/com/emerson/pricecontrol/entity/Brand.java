@@ -9,7 +9,7 @@ public class Brand {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(length = 100, nullable = false, unique = true)
     @NotBlank(message = "O campo nome é obrigatório")
@@ -20,11 +20,11 @@ public class Brand {
 
     public Brand() { }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

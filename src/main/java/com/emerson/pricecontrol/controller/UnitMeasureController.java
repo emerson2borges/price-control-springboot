@@ -39,6 +39,15 @@ public class UnitMeasureController {
         return new ResponseEntity<>(unitMeasureRepository.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity getUnityById(@PathVariable Long id) {
+        if (unitMeasureRepository.findById(id).isPresent()) {
+            return new ResponseEntity<>(unitMeasureRepository.findById(id).get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDTO("Unidade não encontrada"), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping()
     public ResponseEntity post(@RequestBody UnitMeasureDTO unitMeasureDTO) {
         try {
@@ -82,8 +91,8 @@ public class UnitMeasureController {
             UnitMeasure updatedUnitMeasure = unitMeasureRepository.save(existingUnitMeasure);
             return new ResponseEntity<>(updatedUnitMeasure, HttpStatus.OK);
 
-        } catch (Exception error) {
-            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ResponseDTO(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

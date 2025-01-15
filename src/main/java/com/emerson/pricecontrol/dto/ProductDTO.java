@@ -1,6 +1,7 @@
 package com.emerson.pricecontrol.dto;
 
 import com.emerson.pricecontrol.entity.Brand;
+import com.emerson.pricecontrol.entity.Product;
 import com.emerson.pricecontrol.entity.UnitMeasure;
 
 public class ProductDTO {
@@ -13,6 +14,28 @@ public class ProductDTO {
     private Brand brand;
 
     public ProductDTO() { }
+
+    public ProductDTO(Long id, String name, String description, UnitMeasure unitMeasure, Brand brand) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.unitMeasure = unitMeasure;
+        this.brand = brand;
+    }
+
+    public static ProductDTO fromEntity(Product product) {
+        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getUnitMeasure(), product.getBrand());
+    }
+
+    public static Product toEntity(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setId(productDTO.getId());
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setUnitMeasure(productDTO.getUnitMeasure());
+        product.setBrand(productDTO.getBrand());
+        return product;
+    }
 
     public Long getId() {
         return id;

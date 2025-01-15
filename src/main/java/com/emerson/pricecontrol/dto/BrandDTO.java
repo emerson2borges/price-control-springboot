@@ -1,5 +1,7 @@
 package com.emerson.pricecontrol.dto;
 
+import com.emerson.pricecontrol.entity.Brand;
+
 public class BrandDTO {
 
     private Long id;
@@ -7,6 +9,24 @@ public class BrandDTO {
     private String description;
 
     public BrandDTO() {}
+
+    public BrandDTO(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
+    public static BrandDTO fromEntity(Brand brand) {
+        return new BrandDTO(brand.getId(), brand.getName(), brand.getDescription());
+    }
+
+    public static Brand toEntity(BrandDTO brandDTO) {
+        Brand brand = new Brand();
+        brand.setId(brandDTO.getId());
+        brand.setName(brandDTO.getName());
+        brand.setDescription(brandDTO.getDescription());
+        return brand;
+    }
 
     public Long getId() {
         return id;

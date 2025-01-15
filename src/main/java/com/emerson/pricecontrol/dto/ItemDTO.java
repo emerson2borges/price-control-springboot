@@ -16,24 +16,6 @@ public class ItemDTO {
     public ItemDTO() {}
 
     public ItemDTO(
-        Long id,
-        Long id_product,
-        Long id_supermarket,
-        Integer quantity,
-        BigDecimal price,
-        Boolean discount,
-        LocalDate date
-    ) {
-        this.id = id;
-        this.idProduct = id_product;
-        this.idSupermarket = id_supermarket;
-        this.quantity = quantity;
-        this.price = price;
-        this.discount = discount;
-        this.date = date;
-    }
-
-    public ItemDTO(
         Long id_product,
         Long id_supermarket,
         Integer quantity,

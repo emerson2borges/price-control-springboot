@@ -40,6 +40,16 @@ public class SupermarketController {
         return new ResponseEntity<>(supermarketRepository.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity getSupermarketById(@PathVariable Long id) {
+        Optional<Supermarket> supermarket = supermarketRepository.findById(id);
+        if (!supermarket.isEmpty()) {
+            return new ResponseEntity<>(supermarket.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDTO("Supermercado não encontrado"), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping()
     public ResponseEntity post(@RequestBody Supermarket supermarket) {
         try {
@@ -99,8 +109,8 @@ public class SupermarketController {
             // Salva as alterações no repositório
             Supermarket updatedSupermarket = supermarketRepository.save(existingSupermarket);
             return new ResponseEntity<>(updatedSupermarket, HttpStatus.OK);
-        } catch (Exception error){
-            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex){
+            return new ResponseEntity<>(new ResponseDTO(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

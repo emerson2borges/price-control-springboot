@@ -34,8 +34,7 @@ public class Item {
     private LocalDate date;
 
     // Construtores
-    public Item() {
-    }
+    public Item() { }
 
     public Item(Product idProduct, Supermarket idSupermarket, Integer quantity, BigDecimal price, Boolean discount, LocalDate date) {
         this.product = idProduct;

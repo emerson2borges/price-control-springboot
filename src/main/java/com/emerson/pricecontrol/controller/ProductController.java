@@ -38,6 +38,16 @@ public class ProductController {
         return new ResponseEntity<>(productRepository.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity getProductById(@PathVariable Long id) {
+        Optional<Product> productById = productRepository.findById(id);
+        if (productById.isPresent()) {
+            return new ResponseEntity<>(productById, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDTO("Produto não encontrado"), HttpStatus.NOT_FOUND);
+        }
+    }
+
 //    @PostMapping()
 //    public ResponseEntity post(@RequestBody Product product) {
 //        try {
@@ -88,13 +98,13 @@ public class ProductController {
             // Salva as alterações no repositório e retorna ao cliente
             Product updatedProduct = productRepository.save(existingProduct);
             return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-        } catch (Exception error) {
-            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ResponseDTO(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable long id){
+    public ResponseEntity delete(@PathVariable Long id){
         try {
             Optional<Product> optionalProduct = productRepository.findById(id);
             if (optionalProduct.isEmpty()) {

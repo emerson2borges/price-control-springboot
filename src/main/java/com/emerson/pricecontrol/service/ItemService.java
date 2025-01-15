@@ -73,16 +73,6 @@ public class ItemService {
             existingItem.setSupermarket(supermarket);
         }
 
-        System.out.println("ITEMDTO: "+itemDTO.toString());
-        System.out.println("ITEMDTO: "+itemDTO);
-
-        System.out.println("ITEMDTO: "+itemDTO.toString());
-        System.out.println("ITEMDTO: "+itemDTO.getDate());
-
-        System.out.println("EXISTINGITEM: "+existingItem.toString());
-        System.out.println("EXISTINGITEM: "+existingItem.getDate());
-
-
         // Atualiza os campos do item existente com os dados do DTO
 //        existingItem.setProduct(product);
 //        existingItem.setSupermarket(supermarket);
