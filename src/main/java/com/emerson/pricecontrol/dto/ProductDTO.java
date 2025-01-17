@@ -9,7 +9,6 @@ public class ProductDTO {
     private Long id;
     private String name;
     private String description;
-    private Integer volume;
     private UnitMeasure unitMeasure;
     private Brand brand;
 
@@ -59,14 +58,6 @@ public class ProductDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getVolume() {
-        return volume;
-    }
-
-    public void setVolume(Integer volume) {
-        this.volume = volume;
     }
 
     public UnitMeasure getUnitMeasure() {

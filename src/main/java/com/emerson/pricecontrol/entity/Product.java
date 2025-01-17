@@ -16,9 +16,6 @@ public class Product {
     @Column(length = 255, nullable = true)
     private String description;
 
-    @Column(nullable = false)
-    private Double volume;
-
     @ManyToOne
     @JoinColumn(name = "id_unit_measure", nullable = false)
     private UnitMeasure unitMeasure;
@@ -51,14 +48,6 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Double getVolume() {
-        return volume;
-    }
-
-    public void setVolume(Double volume) {
-        this.volume = volume;
     }
 
     public UnitMeasure getUnitMeasure() {
