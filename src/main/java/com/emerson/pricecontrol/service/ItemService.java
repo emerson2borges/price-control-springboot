@@ -31,6 +31,7 @@ public class ItemService {
 
     public Optional<Item> findById(Long id) {
         return itemRepository.findById(id);
+//        return itemRepository.findById(id).orElse(null);
     }
 
     public Item createItem(ItemDTO itemDTO) {
@@ -46,35 +47,62 @@ public class ItemService {
     }
 
     public Item updateItem(ItemDTO itemDTO) {
+        // Verifica se o ID do item está presente no DTO
 
         if (itemDTO.getId() == null) {
             throw new IllegalArgumentException("ID do item não fornecido.");
         }
 
+        // Busca o item existente no banco de dados
         Item existingItem = itemRepository.findById(itemDTO.getId())
-            .orElseThrow(() -> new RuntimeException("Item não encontrado com o ID fornecido"));
+                .orElseThrow(() -> new RuntimeException("Item não encontrado com o ID fornecido"));
 
+        // Valida e obtém o produto associado ao item
         Product product = productRepository.findById(itemDTO.getIdProduct())
-            .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID fornecido"));
-
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID fornecido"));
+        // Verifica se é o mesmo produto, se não for, apenas associe um novo produto
         if (!existingItem.getProduct().getId().equals(itemDTO.getIdProduct())) {
             existingItem.setProduct(product);
         }
 
+        // Valida e obtém o supermercado associado ao item
         Supermarket supermarket = supermarketRepository.findById(itemDTO.getIdSupermarket())
-            .orElseThrow(() -> new RuntimeException("Supermercado não encontrado com o ID fornecido"));
-
+                .orElseThrow(() -> new RuntimeException("Supermercado não encontrado com o ID fornecido"));
+        // Verifica se é o mesmo supermercado, se não for, apenas associa um novo supermercado
         if (!existingItem.getSupermarket().getId().equals(itemDTO.getIdSupermarket())) {
             existingItem.setSupermarket(supermarket);
         }
 
+        // Atualiza os campos do item existente com os dados do DTO
+//        existingItem.setProduct(product);
+//        existingItem.setSupermarket(supermarket);
         existingItem.setQuantity(itemDTO.getQuantity());
         existingItem.setPrice(itemDTO.getPrice());
         existingItem.setDiscount(itemDTO.getDiscount());
         existingItem.setDate(itemDTO.getDate());
 
+        // Salva o item atualizado no banco de dados e retorna o item atualizado
         return itemRepository.save(existingItem);
     }
+//    public Item updateItem(ItemDTO itemDTO) {
+//        Item existingItem = itemRepository.findById(itemDTO.getId())
+//                .orElseThrow(() -> new RuntimeException("Item não encontrado"));
+//
+//        Product product = productRepository.findById(itemDTO.getIdProduct())
+//                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+//
+//        Supermarket supermarket = supermarketRepository.findById(itemDTO.getIdSupermarket())
+//                .orElseThrow(() -> new RuntimeException("Supermercado não encontrado"));
+//
+//        existingItem.setProduct(product);
+//        existingItem.setSupermarket(supermarket);
+//        existingItem.setQuantity(itemDTO.getQuantity());
+//        existingItem.setPrice(itemDTO.getPrice());
+//        existingItem.setDiscount(itemDTO.getDiscount());
+//        existingItem.setDate(itemDTO.getDate());
+//
+//        return itemRepository.save(existingItem);
+//    }
 
     public void deleteItem(Long id) {
         if (!itemRepository.existsById(id)) {

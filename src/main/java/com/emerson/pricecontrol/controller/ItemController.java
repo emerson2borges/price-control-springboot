@@ -21,9 +21,10 @@ import java.util.Optional;
 public class ItemController {
 
     private ModelMapper mapper;
-    private ItemService itemService;
 
     @Autowired
+    private ItemService itemService;
+
     public ItemController(@Autowired ItemService itemService) {
         this.itemService = itemService;
         this.mapper = new ModelMapper();
