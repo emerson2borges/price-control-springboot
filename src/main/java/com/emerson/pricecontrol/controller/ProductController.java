@@ -20,16 +20,14 @@ import java.util.List;
 @RestController
 public class ProductController {
 
-    private final SupermarketService supermarketService;
     private ModelMapper mapper;
 
     private ProductService productService;
 
     @Autowired
-    public ProductController(@Autowired ProductService productService, SupermarketService supermarketService) {
+    public ProductController(@Autowired ProductService productService) {
         this.productService = productService;
         this.mapper = new ModelMapper();
-        this.supermarketService = supermarketService;
     }
 
     @GetMapping()
